@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Wild Gunman</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- MENU -->
+  <div id="screen-menu" class="screen">
+    <h1 class="menu-title">Wild<br>Gunman</h1>
+    <button class="btn" id="btn-start">Start Game</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <div class="hud-labels">
+        <div class="hud-label">Time.You</div>
+        <div class="hud-label">Gunman</div>
+      </div>
+      <div class="hud-timers">
+        <div class="hud-timer" id="timer-you">0.00</div>
+        <div class="hud-timer" id="timer-gunman">0.00</div>
+      </div>
+      <div class="hud-scores">
+        <div>Score: <span id="score-num">0</span></div>
+        <div id="level-label">Level 1</div>
+      </div>
+    </div>
+
+    <div id="game-area">
+      <!-- Canvas for sprite rendering -->
+      <canvas id="gunman-canvas"></canvas>
+      <div id="msg"></div>
+      <div id="msg-fire"></div>
+      <div id="game-buttons">
+        <button class="btn hidden" id="btn-restart">Restart</button>
+        <button class="btn hidden" id="btn-next">Next Level</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIN -->
+  <div id="screen-win" class="screen hidden">
+    <div class="win-title">You Won!</div>
+    <div class="win-score">Final Score: <span id="win-score">0</span></div>
+    <button class="btn" id="btn-play-again">Play Again</button>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
