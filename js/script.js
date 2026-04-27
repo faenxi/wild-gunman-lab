@@ -1,6 +1,5 @@
 'use strict';
 
-// ── DOM ──────────────────────────────────────────────────────────────────────
 const screenMenu   = document.getElementById('screen-menu');
 const screenGame   = document.getElementById('screen-game');
 const screenWin    = document.getElementById('screen-win');
@@ -18,7 +17,6 @@ const btnRestart   = document.getElementById('btn-restart');
 const btnNext      = document.getElementById('btn-next');
 const btnPlayAgain = document.getElementById('btn-play-again');
 
-// ── SOUNDS ───────────────────────────────────────────────────────────────────
 const SFX = {};
 ['intro','wait','fire','shot','shot-fall','death','foul','win'].forEach(n => {
   const a = new Audio('sfx/' + n + '.m4a');
@@ -28,16 +26,10 @@ const SFX = {};
 function play(n) { const s=SFX[n]; if(!s)return; s.pause(); s.currentTime=0; s.play().catch(()=>{}); }
 function stopAll() { Object.values(SFX).forEach(s=>{s.pause();s.currentTime=0;}); }
 
-// ── SPRITE IMAGES ────────────────────────────────────────────────────────────
-// Each entry: { img: Image, frameW, h, frames }
-// walk: array of x offsets per frame (from analysis)
-// stand, ready, shoot: x offset (single frame)
-// die: array of x offsets
 
 const SPRITE_DEFS = {
   r0: {
     src: 'img/sprites/',
-    // r0: stand/ready/shoot 136x256, walk 400x256 (3 frames @0,136,268), die 528x256 (4 frames @0,136,272,408)
     h: 256,
     stand: { file:'r0_stand.png', x:0, w:136 },
     ready: { file:'r0_ready.png', x:0, w:136 },
@@ -79,7 +71,6 @@ const SPRITE_DEFS = {
   },
 };
 
-// Preload all sprite images
 const LOADED_IMGS = {};
 function loadSpriteImage(file) {
   if (!LOADED_IMGS[file]) {
@@ -89,14 +80,12 @@ function loadSpriteImage(file) {
   }
   return LOADED_IMGS[file];
 }
-// Preload all
 Object.values(SPRITE_DEFS).forEach(def => {
   ['stand','ready','shoot'].forEach(k => loadSpriteImage(def[k].file));
   loadSpriteImage(def.walk.file);
   loadSpriteImage(def.die.file);
 });
 
-// ── LEVELS ───────────────────────────────────────────────────────────────────
 const LEVELS = [
   { name:'Level 1', spriteKey:'r0', walkMs:4500, waitMin:1200, waitMax:3500, gunSec:1.30, pts:10 },
   { name:'Level 2', spriteKey:'r1', walkMs:3500, waitMin:800,  waitMax:2500, gunSec:1.50, pts:20 },
@@ -105,7 +94,6 @@ const LEVELS = [
   { name:'Level 5', spriteKey:'r4', walkMs:1500, waitMin:300,  waitMax:1200, gunSec:0.70, pts:50 },
 ];
 
-// ── SPRITE RENDERING VIA CANVAS ───────────────────────────────────────────────
 const SPRITE_SCALE = 0.75;
 
 const canvas  = document.getElementById('gunman-canvas');
@@ -140,7 +128,7 @@ function renderSprite() {
   } else if (spriteState === 'shoot') {
     srcImg = loadSpriteImage(def.shoot.file);
     srcX = def.shoot.x; srcW = def.shoot.w;
-  } else { // die
+  } else { 
     const frame = def.die.frames[Math.min(dieFrame, def.die.frames.length - 1)];
     srcImg = loadSpriteImage(def.die.file);
     srcX = frame[0]; srcW = frame[1];
@@ -156,7 +144,6 @@ function renderSprite() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(srcImg, srcX, 0, srcW, srcH, 0, 0, displayW, displayH);
 
-  // Position: bottom of sprite on ground line
   const groundY = 297;
   canvas.style.left   = canvasLeft + 'px';
   canvas.style.bottom = (480 - groundY) + 'px';
@@ -198,7 +185,6 @@ function startDieAnim(cb) {
   }, 200);
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────────
 let currentLevel = 0;
 let score        = 0;
 let phase        = 'idle';
@@ -226,7 +212,6 @@ function startTimer() {
 }
 function stopTimer() { if(rafId){cancelAnimationFrame(rafId);rafId=null;} }
 
-// ── GAME FLOW ─────────────────────────────────────────────────────────────────
 function startGame() {
   stopAll(); stopTimer(); clearPending();
   stopWalkAnim(); stopDieAnim();
@@ -250,7 +235,6 @@ function beginRound() {
   playerTime=0;
   updateHUD();
 
-  // Gunman starts from right edge, walks left to center
   canvasLeft = 896;
   renderSprite();
 
@@ -264,7 +248,6 @@ function moveGunman() {
 
   startWalkAnim();
 
-  // Walk from right edge (896) to center (383)
   const startX   = 896;
   const endX     = 383;
   const duration = lvl.walkMs;
@@ -372,7 +355,6 @@ function showWin() {
   showScreen(screenWin);
 }
 
-// ── LISTENERS ────────────────────────────────────────────────────────────────
 btnStart.addEventListener('click',     startGame);
 btnRestart.addEventListener('click',   onRestart);
 btnNext.addEventListener('click',      onNext);
